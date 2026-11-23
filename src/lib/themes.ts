@@ -14,6 +14,7 @@
  */
 
 export const THEME_IDS = [
+  "mint",
   "violet",
   "emerald",
   "cobalt",
@@ -23,7 +24,8 @@ export const THEME_IDS = [
 
 export type ThemeId = (typeof THEME_IDS)[number];
 
-export const DEFAULT_THEME: ThemeId = "violet";
+// Merged project (GeniusMinds + wacrm): light green is the brand accent.
+export const DEFAULT_THEME: ThemeId = "mint";
 
 export const STORAGE_KEY = "wacrm.theme";
 
@@ -68,9 +70,15 @@ export interface ThemeMeta {
 
 export const THEMES: ReadonlyArray<ThemeMeta> = [
   {
+    id: "mint",
+    name: "Mint",
+    tagline: "Light green — growth, completed actions, money in. The default.",
+    swatch: "oklch(0.84 0.17 150)",
+  },
+  {
     id: "violet",
     name: "Violet",
-    tagline: "The default — confident, slightly playful.",
+    tagline: "Confident, slightly playful.",
     swatch: "oklch(0.526 0.247 293)",
   },
   {

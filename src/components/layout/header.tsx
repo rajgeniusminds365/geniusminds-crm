@@ -27,6 +27,28 @@ const pageTitles: Record<string, string> = {
   "/broadcasts": "broadcasts",
   "/automations": "automations",
   "/settings": "settings",
+  // [GeniusMinds merge] pages rebuilt from GeniusMindsCRM-Complete.
+  "/activities": "activities",
+  "/analytics": "analytics",
+  "/reports": "reports",
+  "/email": "email",
+  "/calls": "calls",
+  "/schedule": "schedule",
+  "/assistant": "assistant",
+  "/expenses": "expenses",
+  "/payments": "payments",
+  "/students": "students",
+  "/courses": "courses",
+  "/fees": "fees",
+  "/certificates": "certificates",
+  "/landing-pages": "landingPages",
+  "/seo": "seo",
+  "/post-ideas": "postIdeas",
+  "/media": "media",
+  "/intelligence": "intelligence",
+  "/audit-log": "auditLog",
+  "/flows": "flows",
+  "/agents": "aiAgents",
 };
 
 function getPageTitleKey(pathname: string): string {

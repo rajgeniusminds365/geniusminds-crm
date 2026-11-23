@@ -2,15 +2,35 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { useTotalUnread } from "@/hooks/use-total-unread";
 import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
 import {
+  Award,
+  BarChart3,
   Bell,
+  BookOpen,
   Bot,
+  CalendarCheck,
+  CalendarDays,
+  ChevronDown,
   Crown,
+  FileBarChart,
+  Globe,
+  GraduationCap,
+  Images,
+  IndianRupee,
+  Lightbulb,
+  Mail,
+  PenLine,
+  Phone,
+  Receipt,
+  ScrollText,
+  Search,
+  Sparkles,
+  Wallet,
   GitBranch,
   LayoutDashboard,
   LogOut,
@@ -89,16 +109,101 @@ interface NavItem {
   beta?: boolean;
 }
 
-const navItems: NavItem[] = [
-  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
-  { href: "/inbox", labelKey: "inbox", icon: MessageSquare },
-  { href: "/notifications", labelKey: "notifications", icon: Bell },
-  { href: "/contacts", labelKey: "contacts", icon: Users },
-  { href: "/pipelines", labelKey: "pipelines", icon: GitBranch },
-  { href: "/broadcasts", labelKey: "broadcasts", icon: Radio },
-  { href: "/automations", labelKey: "automations", icon: Zap },
-  { href: "/flows", labelKey: "flows", icon: Workflow, beta: true },
-  { href: "/agents", labelKey: "aiAgents", icon: Bot },
+/**
+ * Navigation, grouped the GeniusMindsCRM way (collapsible categories).
+ * `origin` records where each page came from in the merge:
+ *   "wacrm"       — the base project's page, unchanged.
+ *   "geniusminds" — rebuilt from GeniusMindsCRM-Complete on wacrm's stack.
+ * Where both projects had the same page (Dashboard, Contacts/Clients,
+ * Inbox, Notifications, Settings) only the wacrm version is kept.
+ */
+interface NavGroup {
+  key: string;
+  labelKey: string;
+  adminOnly?: boolean;
+  items: (NavItem & { origin: "wacrm" | "geniusminds" })[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    key: "workspace",
+    labelKey: "groupWorkspace",
+    items: [
+      { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard, origin: "wacrm" },
+      { href: "/activities", labelKey: "activities", icon: CalendarCheck, origin: "geniusminds" },
+    ],
+  },
+  {
+    key: "pipeline",
+    labelKey: "groupPipeline",
+    items: [
+      { href: "/contacts", labelKey: "contacts", icon: Users, origin: "wacrm" },
+      { href: "/pipelines", labelKey: "pipelines", icon: GitBranch, origin: "wacrm" },
+      { href: "/analytics", labelKey: "analytics", icon: BarChart3, origin: "geniusminds" },
+      { href: "/reports", labelKey: "reports", icon: FileBarChart, origin: "geniusminds" },
+    ],
+  },
+  {
+    key: "communication",
+    labelKey: "groupCommunication",
+    items: [
+      { href: "/inbox", labelKey: "inbox", icon: MessageSquare, origin: "wacrm" },
+      { href: "/notifications", labelKey: "notifications", icon: Bell, origin: "wacrm" },
+      { href: "/broadcasts", labelKey: "broadcasts", icon: Radio, origin: "wacrm" },
+      { href: "/email", labelKey: "email", icon: Mail, origin: "geniusminds" },
+      { href: "/calls", labelKey: "calls", icon: Phone, origin: "geniusminds" },
+      { href: "/schedule", labelKey: "schedule", icon: CalendarDays, origin: "geniusminds" },
+    ],
+  },
+  {
+    key: "growth",
+    labelKey: "groupGrowth",
+    items: [
+      { href: "/automations", labelKey: "automations", icon: Zap, origin: "wacrm" },
+      { href: "/flows", labelKey: "flows", icon: Workflow, beta: true, origin: "wacrm" },
+      { href: "/agents", labelKey: "aiAgents", icon: Bot, origin: "wacrm" },
+      { href: "/assistant", labelKey: "assistant", icon: Sparkles, origin: "geniusminds" },
+    ],
+  },
+  {
+    key: "commerce",
+    labelKey: "groupCommerce",
+    items: [
+      { href: "/expenses", labelKey: "expenses", icon: Receipt, origin: "geniusminds" },
+      { href: "/payments", labelKey: "payments", icon: IndianRupee, origin: "geniusminds" },
+    ],
+  },
+  {
+    key: "education",
+    labelKey: "groupEducation",
+    items: [
+      { href: "/students", labelKey: "students", icon: GraduationCap, origin: "geniusminds" },
+      { href: "/courses", labelKey: "courses", icon: BookOpen, origin: "geniusminds" },
+      { href: "/fees", labelKey: "fees", icon: Wallet, origin: "geniusminds" },
+      { href: "/certificates", labelKey: "certificates", icon: Award, origin: "geniusminds" },
+    ],
+  },
+  {
+    key: "marketing",
+    labelKey: "groupMarketing",
+    items: [
+      { href: "/landing-pages", labelKey: "landingPages", icon: Globe, origin: "geniusminds" },
+      { href: "/seo", labelKey: "seo", icon: Search, origin: "geniusminds" },
+      { href: "/post-ideas", labelKey: "postIdeas", icon: PenLine, origin: "geniusminds" },
+      { href: "/media", labelKey: "media", icon: Images, origin: "geniusminds" },
+    ],
+  },
+  {
+    key: "intelligence",
+    labelKey: "groupIntelligence",
+    items: [{ href: "/intelligence", labelKey: "intelligence", icon: Lightbulb, origin: "geniusminds" }],
+  },
+  {
+    key: "admin",
+    labelKey: "groupAdmin",
+    adminOnly: true,
+    items: [{ href: "/audit-log", labelKey: "auditLog", icon: ScrollText, origin: "geniusminds" }],
+  },
 ];
 
 const bottomNavItems = [
@@ -119,6 +224,19 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
   const { profile, profileLoading, account, accountRole, signOut } = useAuth();
   const totalUnread = useTotalUnread();
   const unreadNotifications = useUnreadNotifications();
+  // GeniusMinds-style collapsible nav groups. The group holding the
+  // current page is always open; others open/close on click.
+  const [openGroups, setOpenGroups] = useState<Set<string>>(() => new Set());
+  const toggleGroup = (key: string) =>
+    setOpenGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  const isItemActive = (href: string) =>
+    pathname === href || (href !== "/dashboard" && pathname.startsWith(`${href}/`));
+  const isAdminRole = accountRole === "owner" || accountRole === "admin";
   // Only surface the account-name strip when it actually carries
   // information. A solo user's personal account is named after them
   // (the 017 signup trigger seeds it from `full_name`), so showing it
@@ -207,11 +325,27 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
 
         {/* Main navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-4">
-          <ul className="flex flex-col gap-1">
-            {navItems.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/dashboard" && pathname.startsWith(item.href));
+          <div className="flex flex-col gap-1">
+            {navGroups
+              .filter((g) => !g.adminOnly || isAdminRole)
+              .map((group) => {
+                const groupActive = group.items.some((item) => isItemActive(item.href));
+                const expanded = groupActive || openGroups.has(group.key);
+                return (
+                  <section key={group.key}>
+                    <button
+                      type="button"
+                      aria-expanded={expanded}
+                      aria-controls={`nav-group-${group.key}`}
+                      onClick={() => toggleGroup(group.key)}
+                      className="flex w-full items-center justify-between rounded-md px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground"
+                    >
+                      {t(group.labelKey)}
+                      <ChevronDown className={cn("h-3 w-3 transition-transform", expanded ? "rotate-0" : "-rotate-90")} />
+                    </button>
+                    <ul id={`nav-group-${group.key}`} hidden={!expanded} className="mb-1 flex flex-col gap-1">
+                      {group.items.map((item) => {
+              const isActive = isItemActive(item.href);
 
               const showUnreadDot =
                 item.href === "/inbox" && totalUnread > 0 && !isActive;
@@ -266,7 +400,11 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
                 </li>
               );
             })}
-          </ul>
+                    </ul>
+                  </section>
+                );
+              })}
+          </div>
 
           <div className="my-4 border-t border-border" />
 

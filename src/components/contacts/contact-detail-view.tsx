@@ -44,6 +44,7 @@ import { useTranslations } from 'next-intl';
 import { planCustomValueWrites } from '@/lib/contacts/custom-value-writes';
 import { contactHandle } from '@/lib/whatsapp/wa-identity';
 import { parseInternationalPhone } from '@/lib/whatsapp/phone-utils';
+import { GmLeadCard } from '@/components/gm/lead-card';
 
 interface ContactDetailViewProps {
   open: boolean;
@@ -547,6 +548,13 @@ export function ContactDetailView({
                     )}
                     {t('saveChangesBtn')}
                   </Button>
+                  {/* [GeniusMinds merge] Admissions details for this contact
+                      (gm_lead_profiles). Additive — reads/writes its own table only. */}
+                  {contact && (
+                    <GmLeadCard
+                      contact={{ id: contact.id, name: contact.name ?? null, phone: contact.phone, email: contact.email ?? null }}
+                    />
+                  )}
                 </div>
               </TabsContent>
 

@@ -73,6 +73,8 @@ export async function middleware(request: NextRequest) {
   // Every top-level route under src/app/(dashboard)/ belongs here —
   // middleware.test.ts reads that directory and fails on a missing one.
   const protectedPaths = ['/dashboard', '/inbox', '/contacts', '/pipelines', '/broadcasts', '/automations', '/flows', '/agents', '/notifications', '/settings']
+    // [GeniusMinds merge] pages rebuilt from GeniusMindsCRM-Complete.
+    .concat(['/activities', '/analytics', '/reports', '/email', '/calls', '/schedule', '/assistant', '/expenses', '/payments', '/students', '/courses', '/fees', '/certificates', '/landing-pages', '/seo', '/post-ideas', '/media', '/intelligence', '/audit-log'])
   if (!user && protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'

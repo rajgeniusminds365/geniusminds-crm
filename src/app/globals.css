@@ -229,6 +229,41 @@ html[data-theme="rose"] {
   --sidebar-ring: oklch(0.645 0.22 16);
 }
 
+/* ---- Mint (light green) — merged-project default ----
+ * Added for the GeniusMinds + wacrm merge. Light green is the brand
+ * accent: growth, completed actions, money in.
+ * Dark mode uses a bright light green with dark text on buttons.
+ * Light mode deepens the same hue a step so primary-coloured text,
+ * links and the active nav item stay readable on white; tinted
+ * surfaces (primary-soft) stay light green in both modes. */
+html[data-theme="mint"] {
+  --primary: oklch(0.84 0.17 150);
+  --primary-foreground: oklch(0.22 0.05 150);
+  --primary-hover: oklch(0.88 0.15 150);
+  --primary-soft: oklch(0.84 0.17 150 / 0.14);
+  --primary-soft-2: oklch(0.84 0.17 150 / 0.24);
+  --ring: oklch(0.84 0.17 150);
+  --chart-1: oklch(0.84 0.17 150);
+  --chart-2: oklch(0.78 0.12 185);
+  --sidebar-primary: oklch(0.84 0.17 150);
+  --sidebar-primary-foreground: oklch(0.22 0.05 150);
+  --sidebar-ring: oklch(0.84 0.17 150);
+}
+
+html[data-theme="mint"][data-mode="light"] {
+  --primary: oklch(0.62 0.17 150);
+  --primary-foreground: oklch(0.99 0.01 150);
+  --primary-hover: oklch(0.56 0.16 150);
+  --primary-soft: oklch(0.86 0.15 150 / 0.35);
+  --primary-soft-2: oklch(0.86 0.15 150 / 0.55);
+  --ring: oklch(0.72 0.17 150);
+  --chart-1: oklch(0.72 0.17 150);
+  --chart-2: oklch(0.7 0.12 185);
+  --sidebar-primary: oklch(0.62 0.17 150);
+  --sidebar-primary-foreground: oklch(0.99 0.01 150);
+  --sidebar-ring: oklch(0.72 0.17 150);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
